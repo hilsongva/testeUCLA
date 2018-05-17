@@ -12,7 +12,7 @@ pages:
   - find public -name '*.js' -exec gzip -k -9 \{\} \;
   - find public -name '*.js.map' -exec gzip -k -9 \{\} \;
   # Helps us debug the CI deployment issues.
-  - find public
+  - ls -laF public
   artifacts:
     paths:
     # The name of the directory must be "public", cf. https://gitlab.com/gitlab-org/gitlab-ce/issues/40686.
