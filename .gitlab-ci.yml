@@ -1,0 +1,21 @@
+image: node:8
+
+pages:
+  stage: deploy
+  script:
+  - npm install
+  - npm run ng build --prod --aot --sourcemaps
+  # To the browser and to the world it's /loneliness-scale/, but to GitLab CI it must be "public".
+  - mv dist/loneliness-scale public
+  # Compression.
+  - find public -name '*.html' -exec gzip -k -9 \{\} \;
+  - find public -name '*.js' -exec gzip -k -9 \{\} \;
+  - find public -name '*.js.map' -exec gzip -k -9 \{\} \;
+  # Helps us debug the CI deployment issues.
+  - find public
+  artifacts:
+    paths:
+    # The name of the directory must be "public", cf. https://gitlab.com/gitlab-org/gitlab-ce/issues/40686.
+    - public
+  only:
+  - master
