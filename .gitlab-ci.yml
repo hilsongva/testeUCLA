@@ -4,7 +4,7 @@ pages:
   stage: deploy
   script:
   - npm install
-  - npm run ng build --prod --aot --sourcemaps
+  - node --max-old-space-size=4096 node_modules/@angular/cli/bin/ng build --prod --aot --source-map --no-progress --base-href /loneliness-scale/
   # To the browser and to the world it's /loneliness-scale/, but to GitLab CI it must be "public".
   - mv dist/loneliness-scale public
   # Compression.
