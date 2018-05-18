@@ -9,8 +9,10 @@
 
 @include mat-core();
 
+// The first argument to `mat-palette` is a color map found in "_theming.scss".
+// The remaining arguments are the color identifiers from that map.
 $candy-app-primary: mat-palette($mat-lime, A400);
-$candy-app-accent:  mat-palette($mat-pink, A200, A100, A400);  // TBD.
+$candy-app-accent:  mat-palette($mat-pink, A200, A100, A400);  // TBD. We haven't picked the accent color yet.
 //$candy-app-warn:  mat-palette($mat-red);
 $candy-app-theme:   mat-light-theme($candy-app-primary, $candy-app-accent/*, $candy-app-warn*/);
 
