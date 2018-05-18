@@ -11,6 +11,8 @@ pages:
   - find public -name '*.html' -exec gzip -k -9 \{\} \;
   - find public -name '*.js' -exec gzip -k -9 \{\} \;
   - find public -name '*.js.map' -exec gzip -k -9 \{\} \;
+  - find public -name '*.css' -exec gzip -k -9 \{\} \;
+  - find public -name '*.css.map' -exec gzip -k -9 \{\} \;
   # Helps us debug the CI deployment issues.
   - ls -laF public
   artifacts:
