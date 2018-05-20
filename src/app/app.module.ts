@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.co';
 import { WelcomeComponent } from './welcome.co';
-import { QuestionComponent } from './r-ucla/question.co'
+import { QuestionComponent } from './r-ucla/question.co';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatToolbarModule, MatIconModule, MatSidenavModule, MatListModule, MatButtonModule } from '@angular/material';
@@ -17,7 +17,7 @@ const ROUTES: Routes = [
 @NgModule({
   declarations: [AppComponent, WelcomeComponent, QuestionComponent],
   imports: [
-    RouterModule.forRoot(ROUTES),
+    RouterModule.forRoot(ROUTES, {useHash: true}),
     BrowserModule,
     BrowserAnimationsModule,
     MatToolbarModule,
