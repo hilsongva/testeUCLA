@@ -3,8 +3,6 @@ import { MatDialog } from '@angular/material';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ErrorComponent } from '../error.co';
 
-// TODO: Display the question.
-// TODO: Display the answers.
 // TODO: Redirect to the next question upon getting an answer.
 // TODO: Persist the answers in the browser.
 // TODO: Redirect back to the first question if we can't find the data.
@@ -40,7 +38,8 @@ Keep scoring continuous.
 */
 
 @Component({
-  templateUrl: './question.co.html'})
+  templateUrl: 'question.co.html',
+  styleUrls: ['question.co.scss']})
 export class QuestionComponent implements OnInit {
   /** The question to display, 1-based. */
   num?: number;
