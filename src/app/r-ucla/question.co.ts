@@ -65,7 +65,7 @@ export class QuestionComponent implements OnInit {
       const minWidth = 266;  // My Chrome doesn't get smaller than that so it's the minimal width I've tested for.
       const range = adaptationThreshold - minWidth;  // The range of supported window widths.
       const shortage = Math.min (1, (adaptationThreshold - window.innerWidth) / range);  // 0..1, from least compressed to most compressed.
-      this.marginCorrection = Math.round (- (10 + 50 * shortage));
+      this.marginCorrection = Math.round (- (9 + 49 * shortage));
       // The buttons are being read from the question downward
       // (that is, unline the table headers, they are below the question, not above it).
       // We have considered inversing the tilt but it doesn't sit right with me...
