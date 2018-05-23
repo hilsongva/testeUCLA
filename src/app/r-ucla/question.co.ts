@@ -44,6 +44,8 @@ export class QuestionComponent implements OnInit {
   /** The question to display, 1-based. */
   num?: number;
   question?: Question;
+  /** CSS class `primal` is used until `adjustSize` recalculations, indicating that we're dealing with the raw and uncalculated state. */
+  primal = true;
   /** We inject the "small" class in order to fit the answer buttons onto a small screen.
    * cf. https://codecraft.tv/courses/angular/built-in-directives/ngstyle-and-ngclass/ */
   small = false;
@@ -73,13 +75,20 @@ export class QuestionComponent implements OnInit {
       //console.info ('shortage:', shortage, '; marginCorrection:', this.marginCorrection, '; rotation:', this.rotation)
     } else {  // Turn off the compression and rotation.
       this.marginCorrection = null;
-      this.rotation = null}}
+      this.rotation = null}
+
+    this.primal = false}
 
   @HostListener ('window:resize', ['$event'])
-  onResize (event: any) {this.adjustSize()}
+  onResize (event: any) {
+    setTimeout(() => {this.adjustSize()}, 10)}
 
   ngOnInit() {
-    this.adjustSize();
+    // We might arrive here too early, before the correct `innerWidth` is even known, leading to wrong space calculations.
+    // I've seen this happen in Chrome, when using screen size development tool.
+    // It's better to wait a few milliseconds for the `innerWidth` to stabilize.
+    setTimeout(() => {this.adjustSize()}, 10);
+
     this.route.paramMap.subscribe ((params: ParamMap) => {
       const ns = params.get ('n');
       const n = ns ? +ns : 0;
@@ -88,4 +97,23 @@ export class QuestionComponent implements OnInit {
         this.num = n;
         this.question = q[0];
       } else {
-        setTimeout(() => this.dialog.open (ErrorComponent, {disableClose: true, data: {msg: 'No such question'}}), 1)}})}}
+        setTimeout(() => this.dialog.open (ErrorComponent, {disableClose: true, data: {msg: 'No such question'}}), 1)}})}
+
+  private next() {
+    const nextNum = (this.num || 0) + 1}
+
+  never() {
+    console.info ('never');
+    this.next()}
+
+  rarely() {
+    console.info ('rarely')
+    this.next()}
+
+  sometimes() {
+    console.info ('sometimes')
+    this.next()}
+
+  often() {
+    console.info ('often')
+    this.next()}}

@@ -6,9 +6,12 @@ div.buttons {  // The box with the buttons.
   // Prevents the buttons from bouncing down and up while their size is being decreased by the animated `margin-right`.
   white-space: nowrap}
 
+div.buttons.primal {
+  // With `nowrap` and before `adjustSize` the box might be wider than the window.
+  // It is therefore important not to display the box prematurely, in order not to trigger viewport rescaling.
+  display: none}
+
 button {  // The answer buttons.
-  // Request the style changes to be animated.
-  transition: all 0.7s;
   // We need the buttons to have the same size, otherwise the spacing is uneven when we rotate them.
   // 110px is a bit larger than the usual 103px of the largest button.
   width: 110px}
