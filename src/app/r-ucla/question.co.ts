@@ -44,8 +44,6 @@ export class QuestionComponent implements OnInit {
   /** The question to display, 1-based. */
   num?: number;
   question?: Question;
-  /** CSS class `primal` is used until `adjustSize` recalculations, indicating that we're dealing with the raw and uncalculated state. */
-  primal = true;
   /** We inject the "small" class in order to fit the answer buttons onto a small screen.
    * cf. https://codecraft.tv/courses/angular/built-in-directives/ngstyle-and-ngclass/ */
   small = false;
@@ -75,19 +73,14 @@ export class QuestionComponent implements OnInit {
       //console.info ('shortage:', shortage, '; marginCorrection:', this.marginCorrection, '; rotation:', this.rotation)
     } else {  // Turn off the compression and rotation.
       this.marginCorrection = null;
-      this.rotation = null}
-
-    this.primal = false}
+      this.rotation = null}}
 
   @HostListener ('window:resize', ['$event'])
   onResize (event: any) {
-    setTimeout(() => {this.adjustSize()}, 10)}
+    this.adjustSize()}
 
   ngOnInit() {
-    // We might arrive here too early, before the correct `innerWidth` is even known, leading to wrong space calculations.
-    // I've seen this happen in Chrome, when using screen size development tool.
-    // It's better to wait a few milliseconds for the `innerWidth` to stabilize.
-    setTimeout(() => {this.adjustSize()}, 10);
+    this.adjustSize();
 
     this.route.paramMap.subscribe ((params: ParamMap) => {
       const ns = params.get ('n');
