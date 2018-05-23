@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ErrorComponent } from '../error.co';
@@ -44,13 +44,42 @@ export class QuestionComponent implements OnInit {
   /** The question to display, 1-based. */
   num?: number;
   question?: Question;
+  /** We inject the "small" class in order to fit the answer buttons onto a small screen.
+   * cf. https://codecraft.tv/courses/angular/built-in-directives/ngstyle-and-ngclass/ */
+  small = false;
+  /** Compresses the space between the buttons (by deducing it from the button width). */
+  marginCorrection: number | null = null;
+  /** Button rotation. Like `rotate(50deg)`. The more compressed the buttons are the more we need to rotate them to fit. */
+  rotation: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private dialog: MatDialog
   ) {}
 
+  /** Gradually responsive design. */
+  private adjustSize() {
+    const adaptationThreshold = 500;
+    this.small = window.innerWidth < adaptationThreshold;
+    if (this.small) {  // Gradual compression and rotation of the buttons.
+      const minWidth = 266;  // My Chrome doesn't get smaller than that so it's the minimal width I've tested for.
+      const range = adaptationThreshold - minWidth;  // The range of supported window widths.
+      const shortage = Math.min (1, (adaptationThreshold - window.innerWidth) / range);  // 0..1, from least compressed to most compressed.
+      this.marginCorrection = Math.round (- (10 + 50 * shortage));
+      // The buttons are being read from the question downward
+      // (that is, unline the table headers, they are below the question, not above it).
+      // We have considered inversing the tilt but it doesn't sit right with me...
+      this.rotation = 'rotate(' + Math.round (25 + 25 * shortage) + 'deg)';
+      //console.info ('shortage:', shortage, '; marginCorrection:', this.marginCorrection, '; rotation:', this.rotation)
+    } else {  // Turn off the compression and rotation.
+      this.marginCorrection = null;
+      this.rotation = null}}
+
+  @HostListener ('window:resize', ['$event'])
+  onResize (event: any) {this.adjustSize()}
+
   ngOnInit() {
+    this.adjustSize();
     this.route.paramMap.subscribe ((params: ParamMap) => {
       const ns = params.get ('n');
       const n = ns ? +ns : 0;

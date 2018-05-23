@@ -2,9 +2,31 @@
 
 <br/>
 
-<div class="buttons">
-  <button mat-raised-button color="primary">Never</button>
-  <button mat-raised-button color="primary">Rarely</button>
-  <button mat-raised-button color="primary">Sometimes</button>
-  <button mat-raised-button color="primary">Often</button>
+<div class="buttons" [class.small]="small">
+  <button mat-raised-button
+    color="primary"
+    [class.small]="small"
+    [style.transform]="rotation"
+    [style.margin-right.px]="marginCorrection"
+    >Never</button>
+
+  <button mat-raised-button
+    color="primary"
+    [class.small]="small"
+    [style.transform]="rotation"
+    [style.margin-right.px]="marginCorrection"
+    >Rarely</button>
+
+  <button mat-raised-button
+    color="primary"
+    [class.small]="small"
+    [style.transform]="rotation"
+    [style.margin-right.px]="marginCorrection"
+    >Sometimes</button>
+
+  <button mat-raised-button
+    color="primary"
+    [class.small]="small"
+    [style.transform]="rotation"
+    >Often</button>
 </div>
