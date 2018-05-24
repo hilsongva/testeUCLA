@@ -28,3 +28,15 @@ div.buttons.small {
 button.small {
   // A bit leaner than the default 36px.
   line-height: 30px}
+
+// The "fadingOut" and "fadingIn" classes are used when transitioning from question to question.
+
+// NB: In order for the card height animated transition to happen we'd need to set the card height explicitly.
+// For that we'd need to calculate that height first (cf. https://stackoverflow.com/a/38710590/257568).
+
+mat-card.fadingOut {
+  transition: all 0.3s;
+  color: white}
+
+mat-card.fadingIn {
+  transition: all 0.4s}

@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ErrorComponent } from '../error.co';
 
-// TODO: Redirect to the next question upon getting an answer.
 // TODO: Persist the answers in the browser.
 // TODO: Redirect back to the first question if we can't find the data.
 
@@ -45,6 +44,10 @@ export class QuestionComponent implements OnInit {
   marginCorrection: number | null = null;
   /** Button rotation. Like `rotate(50deg)`. The more compressed the buttons are the more we need to rotate them to fit. */
   rotation: string | null = null;
+  /** Time we started transitioning from question to question, fading out the old question. */
+  fadingOut: number | null = null;
+  /** Time we started transitioning from question to question, fading in the new question. */
+  fadingIn: number | null = null;
 
   constructor(
     private router: Router,
@@ -89,16 +92,25 @@ export class QuestionComponent implements OnInit {
         this.num = n;
         this.question = q[0];
       } else {
-        setTimeout(() => this.dialog.open (ErrorComponent, {disableClose: true, data: {msg: 'No such question'}}), 1)}})}
+        setTimeout (() => this.dialog.open (ErrorComponent, {disableClose: true, data: {msg: 'No such question'}}), 1)}})}
 
   private proceed (num: number | undefined, rate: number) {
     if (num == null) throw new Error ("!num");
+    if (this.fadingOut || (this.fadingIn && Date.now() - this.fadingIn < 200)) return;  // Too late, we're already in transition.
     const tuple = QUESTIONS[num];
     const reverseScored = tuple ? tuple[1] : false;
     const normalized = reverseScored ? 5 - rate : rate;
     console.info ('num:', num, '; rate:', rate, '; reverseScored:', reverseScored, '; normalized:', normalized);
     if (QUESTIONS[num + 1]) {  // If there is a next question then route there.
-      this.router.navigate (['/r-ucla/', num + 1])
+      this.fadingOut = Date.now();
+      setTimeout (() => {
+        this.fadingIn = Date.now();
+        this.fadingOut = null;
+        this.router.navigate (['/r-ucla/', num + 1]);
+        setTimeout (() => {
+          this.fadingIn = null;
+        }, 400);
+      }, 400);
     } else {
       // TODO: Route to final screen.
     }}
