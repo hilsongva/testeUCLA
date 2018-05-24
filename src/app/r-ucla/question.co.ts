@@ -57,7 +57,11 @@ export class QuestionComponent implements OnInit {
     private dialog: MatDialog
   ) {}
 
-  /** Gradually responsive design. */
+  /** Gradually responsive design.  
+   * Note that JavaScript adjustments are often delayed: when the page is loaded or the screen rotation happens,
+   * a browser might see the unadjusted version first. This unadjusted version might have lingering effects.
+   * For instance, if we apply `nowrap` to `buttons` then a browser might notice the page being larger than the screen
+   * and permanently apply the viewport zooming to it. */
   private adjustSize() {
     const adaptationThreshold = 500;
     this.small = window.innerWidth < adaptationThreshold;
