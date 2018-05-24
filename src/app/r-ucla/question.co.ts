@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ErrorComponent } from '../error.co';
 
 // TODO: Redirect to the next question upon getting an answer.
@@ -10,32 +10,26 @@ import { ErrorComponent } from '../error.co';
 type Question = string
 type ReverseScored = boolean
 const QUESTIONS: ([Question, ReverseScored]|null)[] = [null,
-  ['I feel in tune with the people around me', false],  // 1.
+  ['I feel in tune with the people around me', true],  // 1.
   ['I lack companionship', false],  // 2.
   ['There is no one I can turn to', false],  // 3.
   ['I do not feel alone', false],  // 4.
-  ['I feel part of a group of friends', false],  // 5.
-  ['I have a lot in common with the people around me', false],  // 6.
+  ['I feel part of a group of friends', true],  // 5.
+  ['I have a lot in common with the people around me', true],  // 6.
   ['I am no longer close to anyone', false],  // 7.
   ['My interests and ideas are not shared by those around me', false],  // 8.
-  ['I am an outgoing person', false],  // 9.
-  ['There arc people I feel close to', false],  // 10.
+  ['I am an outgoing person', true],  // 9.
+  ['There arc people I feel close to', true],  // 10.
   ['I feel left out', false],  // 11.
   ['My social relation ships are superficial', false],  // 12.
   ['No one really knows me well', false],  // 13.
   ['I feel isolated from others', false],  // 14.
-  ['I can find companionship when I want it', false],  // 15.
-  ['There are people who really understand me', false],  // 16.
+  ['I can find companionship when I want it', true],  // 15.
+  ['There are people who really understand me', true],  // 16.
   ['I am unhappy being so withdrawn', false],  // 17.
   ['People are around me but not with me', false],  // 18.
-  ['There are people I can talk to', false],  // 19.
-  ['There are people I can turn to', false]]  // 20.
-
-/*
-Scoring:
-Items 1, 5, 6, 9, 10, 15, 16, 19, 20 are all reverse scored.
-Keep scoring continuous.
-*/
+  ['There are people I can talk to', true],  // 19.
+  ['There are people I can turn to', true]]  // 20.
 
 @Component({
   templateUrl: 'question.co.html',
@@ -53,6 +47,7 @@ export class QuestionComponent implements OnInit {
   rotation: string | null = null;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog
   ) {}
@@ -96,21 +91,19 @@ export class QuestionComponent implements OnInit {
       } else {
         setTimeout(() => this.dialog.open (ErrorComponent, {disableClose: true, data: {msg: 'No such question'}}), 1)}})}
 
-  private next() {
-    const nextNum = (this.num || 0) + 1}
+  private proceed (num: number | undefined, rate: number) {
+    if (num == null) throw new Error ("!num");
+    const tuple = QUESTIONS[num];
+    const reverseScored = tuple ? tuple[1] : false;
+    const normalized = reverseScored ? 5 - rate : rate;
+    console.info ('num:', num, '; rate:', rate, '; reverseScored:', reverseScored, '; normalized:', normalized);
+    if (QUESTIONS[num + 1]) {  // If there is a next question then route there.
+      this.router.navigate (['/r-ucla/', num + 1])
+    } else {
+      // TODO: Route to final screen.
+    }}
 
-  never() {
-    console.info ('never');
-    this.next()}
-
-  rarely() {
-    console.info ('rarely')
-    this.next()}
-
-  sometimes() {
-    console.info ('sometimes')
-    this.next()}
-
-  often() {
-    console.info ('often')
-    this.next()}}
+  never() {this.proceed (this.num, 1)}
+  rarely() {this.proceed (this.num, 2)}
+  sometimes() {this.proceed (this.num, 3)}
+  often() {this.proceed (this.num, 4)}}
