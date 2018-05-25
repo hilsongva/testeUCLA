@@ -2,35 +2,24 @@
   <div class="mat-h1" style="text-align: center">{{question}}</div>
 </mat-card>
 
-<div class="buttons" [class.small]="small">
+<div class="buttons">
   <button mat-raised-button
     color="primary"
-    [class.small]="small"
-    [style.transform]="rotation"
-    [style.margin-right.px]="marginCorrection"
     (click)="never()"
     >Never</button>
 
   <button mat-raised-button
     color="primary"
-    [class.small]="small"
-    [style.transform]="rotation"
-    [style.margin-right.px]="marginCorrection"
     (click)="rarely()"
     >Rarely</button>
 
   <button mat-raised-button
     color="primary"
-    [class.small]="small"
-    [style.transform]="rotation"
-    [style.margin-right.px]="marginCorrection"
     (click)="sometimes()"
     >Sometimes</button>
 
   <button mat-raised-button
     color="primary"
-    [class.small]="small"
-    [style.transform]="rotation"
     (click)="often()"
     >Often</button>
 </div>

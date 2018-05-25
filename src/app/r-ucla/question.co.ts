@@ -37,13 +37,6 @@ export class QuestionComponent implements OnInit {
   /** The question to display, 1-based. */
   num?: number;
   question?: Question;
-  /** We inject the "small" class in order to fit the answer buttons onto a small screen.
-   * cf. https://codecraft.tv/courses/angular/built-in-directives/ngstyle-and-ngclass/ */
-  small = false;
-  /** Compresses the space between the buttons (by deducing it from the button width). */
-  marginCorrection: number | null = null;
-  /** Button rotation. Like `rotate(50deg)`. The more compressed the buttons are the more we need to rotate them to fit. */
-  rotation: string | null = null;
   /** Time we started transitioning from question to question, fading out the old question. */
   fadingOut: number | null = null;
   /** Time we started transitioning from question to question, fading in the new question. */
@@ -55,35 +48,7 @@ export class QuestionComponent implements OnInit {
     private dialog: MatDialog
   ) {}
 
-  /** Gradually responsive design.  
-   * Note that JavaScript adjustments are often delayed: when the page is loaded or the screen rotation happens,
-   * a browser might see the unadjusted version first. This unadjusted version might have lingering effects.
-   * For instance, if we apply `nowrap` to `buttons` then a browser might notice the page being larger than the screen
-   * and permanently apply the viewport zooming to it. */
-  private adjustSize() {
-    const adaptationThreshold = 500;
-    this.small = window.innerWidth < adaptationThreshold;
-    if (this.small) {  // Gradual compression and rotation of the buttons.
-      const minWidth = 266;  // My Chrome doesn't get smaller than that so it's the minimal width I've tested for.
-      const range = adaptationThreshold - minWidth;  // The range of supported window widths.
-      const shortage = Math.min (1, (adaptationThreshold - window.innerWidth) / range);  // 0..1, from least compressed to most compressed.
-      this.marginCorrection = Math.round (- (9 + 49 * shortage));
-      // The buttons are being read from the question downward
-      // (that is, unline the table headers, they are below the question, not above it).
-      // We have considered inversing the tilt but it doesn't sit right with me...
-      this.rotation = 'rotate(' + Math.round (25 + 25 * shortage) + 'deg)';
-      //console.info ('shortage:', shortage, '; marginCorrection:', this.marginCorrection, '; rotation:', this.rotation)
-    } else {  // Turn off the compression and rotation.
-      this.marginCorrection = null;
-      this.rotation = null}}
-
-  @HostListener ('window:resize', ['$event'])
-  onResize (event: any) {
-    this.adjustSize()}
-
   ngOnInit() {
-    this.adjustSize();
-
     this.route.paramMap.subscribe ((params: ParamMap) => {
       const ns = params.get ('n');
       const n = ns ? +ns : 0;

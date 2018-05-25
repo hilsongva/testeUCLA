@@ -19,24 +19,50 @@ button:nth-of-type(1) {background-color: darken($primary-color, 15%)}
 button:nth-of-type(2) {background-color: darken($primary-color, 10%)}
 button:nth-of-type(3) {background-color: darken($primary-color, 5%)}
 
-// The "small" class is triggered when the screen is too narrow to display the row of horisontal buttons.
+// Styles triggered when the screen is too narrow to display the row of horisontal buttons.
 
-div.buttons.small {
-  // Reserves some space for the sharp angles of the rotated buttons.
-  margin-top: 23px}
+// NB: The media queries provide better UX than the JavaScript-based adjustments
+// because the browsers can calculate the new set of styles *during* the screen rotation and not *after* it.
+// The downsize of the media queries is that we can't apply a fully gradual rotation with CSS,
+// because `calc` doesn't (yet) work properly when using `vw` in `transform: rotate`.
+// Even for `margin-right` the `calc` is pretty useless, breaking on any multiplication with `vw`.
+// "calc() simply cannot do this type of advanced math"
+// - https://medium.com/@jakobud/css-polyfluidsizing-using-calc-vw-breakpoints-and-linear-equations-8e15505d21ab
+// We can workaround this with SCSS loops though.
 
-button.small {
-  // A bit leaner than the default 36px.
-  line-height: 30px}
+// http://sass-lang.com/documentation/file.SASS_REFERENCE.html#each-directive
+@each $maxWidth in 500, 460, 420, 380, 340, 300 {
+  $shortage: 1 - (($maxWidth - 299) / (500 - 299));  // 0..1, from least compressed to most compressed.
+
+  // NB: From looking at the Developer Tools it seems that Chrome wouldn't load the media queries of width smaller than 300.
+  @media (max-width: #{$maxWidth}px) {
+    div.buttons {
+      // Reserves some space for the sharp angles of the rotated buttons.
+      margin-top: 23px}
+
+    button {
+      // Rotate the buttons to fit the narrow screen.
+      $rotate: 25 + 25 * $shortage;
+      transform: rotate(#{$rotate}deg);
+      // A bit leaner than the default 36px.
+      line-height: 30px;
+      transition: all 0.7s;
+      transition-property: transform, line-height}
+
+    button:nth-of-type(1), button:nth-of-type(2), button:nth-of-type(3) {
+      // Compress the space between the buttons (deduce from the button width).
+      $marginRight: - (10 + 50 * $shortage);
+      margin-right: #{$marginRight}px}}}
 
 // The "fadingOut" and "fadingIn" classes are used when transitioning from question to question.
 
 // NB: In order for the card height animated transition to happen we'd need to set the card height explicitly.
-// For that we'd need to calculate that height first (cf. https://stackoverflow.com/a/38710590/257568).
+// For that we'd need to calculate that height first (cf. https://stackoverflow.com/a/38710590/257568,
+// https://css-tricks.com/using-css-transitions-auto-dimensions/).
 
 mat-card.fadingOut {
-  transition: all 0.3s;
+  transition: color 0.3s;
   color: white}
 
 mat-card.fadingIn {
-  transition: all 0.4s}
+  transition: color 0.4s}
