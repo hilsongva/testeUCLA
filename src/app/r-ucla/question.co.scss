@@ -21,8 +21,8 @@ button:nth-of-type(3) {background-color: darken($primary-color, 5%)}
 
 // Styles triggered when the screen is too narrow to display the row of horisontal buttons.
 
-// NB: The media queries provide better UX than the JavaScript-based adjustments
-// because the browsers can calculate the new set of styles *during* the screen rotation and not *after* it.
+// NB: The media queries might provide a better UX than the JavaScript-based adjustments
+// because the browsers can calculate the new set of styles faster, *during* the screen rotation and not *after* it.
 // The downsize of the media queries is that we can't apply a fully gradual rotation with CSS,
 // because `calc` doesn't (yet) work properly when using `vw` in `transform: rotate`.
 // Even for `margin-right` the `calc` is pretty useless, breaking on any multiplication with `vw`.
