@@ -112,9 +112,8 @@ export class QuestionComponent implements OnInit {
           this.fadingIn = null;
         }, 400);
       }, 400);
-    } else {
-      // TODO: Route to final screen.
-    }}
+    } else {  // The questionnaire is finished, show the results.
+      this.router.navigate (['r-ucla/fin'])}}
 
   never() {this.proceed (this.num, 1)}
   rarely() {this.proceed (this.num, 2)}

@@ -1,11 +1,12 @@
 import { ErrorHandler, NgModule } from '@angular/core';
-import { MatButtonModule, MatDialogModule, MatIconModule, MatListModule, MatSidenavModule, MatToolbarModule, MatCardModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatDialogModule, MatIconModule, MatListModule, MatSidenavModule, MatToolbarModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import * as Raven from 'raven-js'; // https://docs.sentry.io/clients/javascript/integrations/angular/
 import { AppComponent } from './app.co';
 import { ErrorComponent } from './error.co';
+import { FinalScore } from './r-ucla/final-score.co';
 import { QuestionComponent } from './r-ucla/question.co';
 import { WelcomeComponent } from './welcome.co';
 
@@ -19,10 +20,11 @@ export class RavenErrorHandler extends ErrorHandler {
 
 const ROUTES: Routes = [
   { path: '', component: WelcomeComponent },
+  { path: 'r-ucla/fin', component: FinalScore },
   { path: 'r-ucla/:n', component: QuestionComponent }];
 
 @NgModule({
-  declarations: [AppComponent, ErrorComponent, WelcomeComponent, QuestionComponent],
+  declarations: [AppComponent, ErrorComponent, FinalScore, WelcomeComponent, QuestionComponent],
   // Dynamically created components, cf. https://stackoverflow.com/a/41519512/257568.
   entryComponents: [ErrorComponent],
   imports: [
