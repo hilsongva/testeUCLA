@@ -3,8 +3,6 @@ import { MatDialog } from '@angular/material';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ErrorComponent } from '../error.co';
 
-// TODO: Redirect back to the first question if we can't find the data.
-
 type Question = string
 type ReverseScored = boolean
 const QUESTIONS: ([Question, ReverseScored]|null)[] = [null,
@@ -32,7 +30,10 @@ const QUESTIONS: ([Question, ReverseScored]|null)[] = [null,
 type QuestionNumber = number;
 type NormalizedScore = number;
 interface QuestionScores {[question: string]: NormalizedScore}  // JSON keys are strings.
-interface Store {answers: QuestionScores}
+interface Store {
+  /** Normalized R-UCLA question scores: question [1,20] -> score [1,4]. */
+  answers: QuestionScores}
+function newStore(): Store {return {answers: {}}}
 
 type TimeMs = number;
 
@@ -54,14 +55,40 @@ export class QuestionComponent implements OnInit {
     private dialog: MatDialog
   ) {}
 
+  /** Loads the `Store` from the browser local storage. Returns a new instance of the `Store` if the storage doesn't have one. */
+  private loadStore(): Store {
+    const json = localStorage.getItem ('r-ucla');
+    let store: Store = json ? JSON.parse (json) : newStore();
+    return store}
+
+  /** Loads the `Store` from the browser local storage, runs the `visitor` on it,
+   * rewrites the local storage with new version of the `Store`. */
+  private withStore<R> (visitor: (store: Store) => R): R {
+    let store = this.loadStore();
+    const r = visitor (store);
+    localStorage.setItem ('r-ucla', JSON.stringify (store));
+    return r}
+
   ngOnInit() {
     this.route.paramMap.subscribe ((params: ParamMap) => {
       const ns = params.get ('n');
       const n = ns ? +ns : 0;
       const q = QUESTIONS[n];
       if (q != null) {
-        this.num = n;
-        this.question = q[0];
+        // See if we have the scores for all the previous questions.
+        const store = this.loadStore();
+        let have_prior_scores = true;
+        for (let num = 1; num < n; ++num) if (!store.answers[num]) {have_prior_scores = false; break}
+        if (!have_prior_scores) {
+          // Chance is that we don't have the scores of the previous questions.
+          // For example, someone could share a link to question 12 with a friend, or decided to open it in another browser.
+          // Continuing the questionnaire makes no sense when we've lost the prior scores. We won't be able to calculate the final score
+          // and if we try something funny (like asking the lost questions later) we might confuse the user.
+          // So I think the best solution here would be to redirect the user back to the first question.
+          this.router.navigate (['/r-ucla/', 1])
+        } else {
+          this.num = n;
+          this.question = q[0]}
       } else {
         setTimeout (() => this.dialog.open (ErrorComponent, {disableClose: true, data: {msg: 'No such question'}}), 1)}})}
 
@@ -73,10 +100,7 @@ export class QuestionComponent implements OnInit {
     const normalized = reverseScored ? 5 - score : score;
 
     // Save the answers, allowing the user to continue the questionnaire across the browser restarts.
-    const json = localStorage.getItem ('r-ucla');
-    let store: Store = json ? JSON.parse (json) : {answers: {}};
-    store.answers[num] = normalized;
-    localStorage.setItem ('r-ucla', JSON.stringify (store));
+    this.withStore (store => store.answers[num] = normalized);
 
     if (QUESTIONS[num + 1]) {  // If there is a next question then route there.
       this.fadingOut = Date.now();
