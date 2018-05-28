@@ -13,9 +13,9 @@ const QUESTIONS: ([Question, ReverseScored]|null)[] = [null,
   ['I am no longer close to anyone', false],  // 7.
   ['My interests and ideas are not shared by those around me', false],  // 8.
   ['I am an outgoing person', true],  // 9.
-  ['There arc people I feel close to', true],  // 10.
+  ['There are people I feel close to', true],  // 10.
   ['I feel left out', false],  // 11.
-  ['My social relation ships are superficial', false],  // 12.
+  ['My social relationships are superficial', false],  // 12.
   ['No one really knows me well', false],  // 13.
   ['I feel isolated from others', false],  // 14.
   ['I can find companionship when I want it', true],  // 15.
