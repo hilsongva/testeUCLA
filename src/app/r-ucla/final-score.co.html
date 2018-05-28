@@ -22,7 +22,7 @@
     sharing a word with us <a href="https://www.reddit.com/r/loneliness/comments/8in9ik/revised_ucla_loneliness_scale/">on Reddit</a>
     or spreading the message).
   </p>
-  <div *ngIf="score >= 44; else elseBlock">
+  <div *ngIf="score && score >= 44; else elseBlock">
     <p>
       Since your score is 44 or higher the loneliness might be a risk factor for you.
       Recognising this is a first step in helping yourself
