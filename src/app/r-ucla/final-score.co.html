@@ -1,1 +1,43 @@
-final score. TBD.
+<mat-toolbar color="primary">
+  <h1>Loneliness Score</h1>
+</mat-toolbar>
+
+<mat-card style="margin: 2%">
+  <div class="mat-h1" style="text-align: center">{{score}}</div>
+</mat-card>
+
+<!-- Would be nice to show a radar chart here. Consider D3 or amcharts. -->
+
+<div class="mat-h3" style="margin: 2%">
+  <p>
+    Your Revised UCLA Loneliness Scale score is {{score}}.
+    Are you in the risk group?
+    <a href="https://www.nbcnews.com/better/pop-culture/americans-are-lonelier-ever-gen-z-may-be-loneliest-ncna873101"
+      >This article by NBC News BETTER</a>
+    suggests that people with R-UCLA score of 44 and more can be considered "officially lonely".
+  </p>
+  <p>
+    (We'd like to tell you more, comparing your score against that of the other people over the world and in your region,
+    but we'd need your support to do that. Please consider helping us <a href="https://www.patreon.com/cures">on Patreon</a>,
+    sharing a word with us <a href="https://www.reddit.com/r/loneliness/comments/8in9ik/revised_ucla_loneliness_scale/">on Reddit</a>
+    or spreading the message).
+  </p>
+  <div *ngIf="score >= 44; else elseBlock">
+    <p>
+      Since your score is 44 or higher the loneliness might be a risk factor for you.
+      Recognising this is a first step in helping yourself
+      (cf. <a href="https://youtu.be/_0hxl03JoA0?t=16m34s">John Cacioppo, TEDx talk "The lethality of loneliness"</a>).
+    </p>
+    <p>
+      Please don't stop there. Understand the risks and effects the loneliness brings, search for ways to respond.
+      We'd like to help, get in touch.
+    </p>
+  </div>
+  <ng-template #elseBlock>
+    <p>
+      Your score is 43 or lower.
+      There's a good chance that loneliness is not your immediate concern.
+      Keep it up!
+    </p>
+  </ng-template>
+</div>

@@ -1,7 +1,5 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { ErrorComponent } from '../error.co';
 
 type Question = string
 type ReverseScored = boolean
@@ -51,8 +49,7 @@ export class QuestionComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
-    private dialog: MatDialog
+    private route: ActivatedRoute
   ) {}
 
   /** Loads the `Store` from the browser local storage. Returns a new instance of the `Store` if the storage doesn't have one. */
@@ -90,7 +87,7 @@ export class QuestionComponent implements OnInit {
           this.num = n;
           this.question = q[0]}
       } else {
-        setTimeout (() => this.dialog.open (ErrorComponent, {disableClose: true, data: {msg: 'No such question'}}), 1)}})}
+        throw new Error ('No such question: ' + n)}})}
 
   private proceed (num: QuestionNumber | undefined, score: NormalizedScore) {
     if (num == null) throw new Error ("!num");
@@ -113,7 +110,17 @@ export class QuestionComponent implements OnInit {
         }, 400);
       }, 400);
     } else {  // The questionnaire is finished, show the results.
-      this.router.navigate (['r-ucla/fin'])}}
+      // The user might want to share her result with others by copying the URL.
+      // Therefore we should not be calculating the score at /r-ucla/fin. Rather, we should pass the final score
+      // (and maybe the list of individual question scores for the graphics) to /r-ucla/fin via the URL.
+      const store = this.loadStore();
+      let finalScore = 0;
+      for (let n = 1; QUESTIONS[n]; ++n) {
+        const score = store.answers[n];
+        if (!score) throw new Error ('Invalid score ' + score + ' for question ' + n);
+        finalScore += score}
+
+      this.router.navigate (['/r-ucla/fin', finalScore])}}
 
   never() {this.proceed (this.num, 1)}
   rarely() {this.proceed (this.num, 2)}
